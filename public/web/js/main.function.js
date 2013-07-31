@@ -2,7 +2,7 @@
 // DB
 //var server_url = 'http://localhost:7474';
 //var server_url = 'http://54.248.253.44/:7474';
-var server_url = 'http://07354a721:f40e047e0@a70d19d29.hosted.neo4j.org:7573';
+var server_url = 'http://a70d19d29.hosted.neo4j.org:7573';
 
 var allRef;
 var allType;
