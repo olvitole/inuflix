@@ -1,0 +1,219 @@
+@CHARSET "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: Helvetica, Arial, Verdana, sans-serif;
+}
+
+html,body {
+	height: 100%;
+	width: 100%;
+	background-color: #f0f0f0;
+	overflow: hidden;
+}
+body {
+	line-height: 1.3;
+	font-size: 14px;
+}
+a {
+	cursor:pointer;
+}
+
+/* Title Bar */
+
+div#titlebar {
+	width: 100%;
+	height: 30px;
+	padding: 2px 10px;
+	background-color: black;
+	color: white;
+	font-size: 16px;
+}
+div#titlebar_title {
+	margin: 5px 0px;
+	width: 50%;
+	float: left;
+	font-weight: bold;
+}
+div#titlebar_menu {
+	margin: 5px 0px;
+	width: 50px;
+	float: right;
+}
+
+/* Containers */
+
+div#container {
+	/* height is defined by javascript */
+	width: 100%;
+	position: relative;
+}
+div#tabpanel{
+	width: 420px;
+	height: 100%;
+	float: left;
+	overflow: auto;
+}
+div#main {
+	margin-left: 420px;
+	height: 100%;
+}
+div#cytoscapeweb {
+	width: 100%;
+	height: 100%;
+}
+
+/* Tab Panel */
+
+ul.tab{
+	padding:0;
+}
+ul.tab li{
+	list-style-type:none;
+	width:100px;
+	height:30px;
+	float:left;
+}
+ul.tab li a{
+	outline:none;
+	background:url("./image/tab.jpg");
+	display:block;
+	line-height:30px;
+	text-align:center;
+	font-weight:bold;
+	color:#333;
+}
+ul.tab li a.selected{
+	background:url("./image/tab_selected.jpg");
+	text-decoration:none;
+	color:#333;
+	cursor:default;
+}
+ul.panel{
+	clear:both;
+	border:0px solid #9FB7D4;
+	border-top:none;
+	padding:0;
+}
+ul.panel li{
+	list-style-type:none;
+	padding:10px;
+}
+div#property{
+	height: 100%;
+}
+
+/* Menu */
+
+div.menu1_t {
+	font-size: 16px;
+	font-weight:bold;
+	padding: 15px 0px 0px 0px;
+	clear: both;
+}
+div.menu1_c {
+	padding: 0px 0px 0px 10px;
+	clear: both;
+}
+div.menu2_t {
+	font-weight: bold;
+	padding: 5px 0px 0px 0px;
+	clear: both;
+}
+div.menu2_c {
+	width: 390px;
+	padding: 5px 0px 0px 0px;
+	clear: both;
+}
+div.menu3_t {
+	width: 130px;
+	float: left;
+}
+div.menu3_c {
+	width: 250px;
+	float: right;
+}
+div.menu3_cb {
+	width: 380px;
+	float: left;
+}
+select.menu3_c {
+	width: 100px;
+}
+div#result_c a {
+	color: blue;
+}
+div#propertyNei a {
+	color: blue;
+}
+
+/* FLOAT WINDOW */
+
+#floatWindow{
+	display:none;
+	position:absolute;
+	width:500px;
+	height:400px;
+	top:100px;
+	left:100px;
+}
+#floatWindow a.close{
+	position:absolute;
+	right:20px;
+	top:1px;
+}
+#floatWindow a.close img{
+	border:none;
+}
+#floatWindow dl{
+	width:100%;
+	height:100%;
+	background:url("./image/floatWindow.png");
+	margin:0;
+	overflow:auto;
+}
+#floatWindow dl dt{
+	height:25px;
+	line-height:25px;
+	text-indent:1em;
+	color:white;
+	font-weight:bold;
+	cursor:move;
+}
+#floatWindow dl dd{
+	margin:0;
+	padding:2px;
+	/*padding:0;
+	line-height:1.5;
+	text-indent:1em;*/
+}
+
+/* JSON Suggest */
+
+input { padding:1px; }
+table { text-align:left; margin:0px 10px; width:900px; }
+table td, table th { border:1px solid #ddd; padding:5px; }
+
+.jsonSuggest li a img {
+	float:left;
+	margin-right:5px;
+}
+.jsonSuggest li a small {
+	display:block;
+	text-align:right;
+}
+.jsonSuggest { font-size:0.8em; }
+
+/* D3 */
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+

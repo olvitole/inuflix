@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<title>Sem4j Cypher</title>
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="./js/cypher.js"></script>
+
+<link rel="stylesheet" href="./default.css" type="text/css" />
+<link rel="shortcut icon" href="./image/ico/Embryotic.ico" />
+
+</head>
+<body>
+
+<div style="margin:5px">
+	<div>
+		<div>
+			Cypher Query
+		</div>
+		<div>
+			<textarea id="textCypher" cols=200 rows=20>
+START x=node:`http://ccle.acme.org/`(name='Topotecan')
+MATCH x-[?:`http://www.w3.org/1999/02/22-rdf-syntax-ns#type`]-t
+RETURN x.uri, t.name?
+LIMIT 100
+			</textarea>
+			<input type="submit" value="Go" id="submitCypher" />
+		</div>
+	</div>
+	<div>
+		<div>Result</div>
+		<div id="resultCypher"></div>
+	</div>
+	<div>
+		<div>Log</div>
+		<div id="logCypher"></div>
+	</div>
+	<div>
+		<div>Example Queries</div>
+		<div>
+			<textarea id="textCypher" cols=200 rows=50>
+
+START x=node:`http://tcng.hgc.jp/`('name:*RAS')
+MATCH x-[?:`http://www.w3.org/1999/02/22-rdf-syntax-ns#type`]-t
+RETURN x.uri, t.name?
+
+START n=node(1)
+RETURN n
+
+START x=node:`http://ccle.acme.org/`(name='Topotecan')
+MATCH x-[?:`http://www.w3.org/1999/02/22-rdf-syntax-ns#type`]-t
+RETURN x.uri, t.name?
+LIMIT 100
+
+START x=node:`http://www.biopax.org/release/`(name='ab8'), y=node:`http://www.biopax.org/release/`(name='EGFR')
+WHERE x.`http://www.biopax.org/release/biopax-level3.owl#displayName` = y.name
+RETURN x.uri, x.`http://www.biopax.org/release/biopax-level3.owl#displayName`
+LIMIT 100
+
+START x=node:`http://www.biopax.org/release/`("name:*")
+RETURN x
+LIMIT 10
+
+START x=node:`http://www.biopax.org/release/`("name:*"), y=node:`http://ccle.acme.org/`(name='EGFR')
+WHERE has(x.`http://www.biopax.org/release/biopax-level3.owl#displayName`)
+AND x.`http://www.biopax.org/release/biopax-level3.owl#displayName` = y.name
+RETURN x.uri, x.`http://www.biopax.org/release/biopax-level3.owl#displayName`
+LIMIT 100
+
+-- This query takes 10 minutes
+START x=node:`http://www.biopax.org/release/`("name:*"), y=node:`http://ccle.acme.org/`("name:*")
+WHERE has(x.`http://www.biopax.org/release/biopax-level3.owl#displayName`)
+AND x.`http://www.biopax.org/release/biopax-level3.owl#displayName` = y.name
+RETURN x.uri, x.`http://www.biopax.org/release/biopax-level3.owl#displayName`
+LIMIT 100
+			</textarea>
+		</div>
+	</div>
+</div>
+	
+</body>
+</html>
