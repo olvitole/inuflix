@@ -3,8 +3,10 @@
 require "neography"
 require "sinatra"
 require "haml"
+require "yaml"
 
-neo = Neography::Rest.new(ENV['NEO4J_URL'] || "http://localhost:7474/")
+config = YAML.load_file("./config.yaml")
+neo = Neography::Rest.new(ENV['NEO4J_URL'] || config["neo4j_server"])
 
 def search_concept(neo, namespace, keyword)
   w3type = "http://www.w3.org/1999/02/22-rdf-syntax-ns\#type"
