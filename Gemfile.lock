@@ -2,7 +2,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.3.5)
-    deepopenstruct (0.1.2)
     excon (0.25.3)
     haml (4.0.3)
       tilt
@@ -33,10 +32,6 @@ GEM
       rack
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    ruby-tmdb (0.2.1)
-      addressable
-      deepopenstruct (>= 0.1.2)
-      json
     rubyzip (0.9.9)
     sinatra (1.4.3)
       rack (~> 1.4)
@@ -51,5 +46,4 @@ DEPENDENCIES
   haml
   heroku
   neography
-  ruby-tmdb
   sinatra
