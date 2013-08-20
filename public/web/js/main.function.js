@@ -1,7 +1,7 @@
 
 // DB
 // var server_url = 'http://192.168.7.22:7474';
-var server_url = 'http://inuflix.heroku.com/exec';
+var server_url = 'http://inuflix.herokuapp.com/exec';
 
 // SEARCH
 function searchConcept(namespace){

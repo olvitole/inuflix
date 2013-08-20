@@ -13,7 +13,7 @@ post "/exec" do
   query = data["query"]
   
   content_type :json
-  neo.execute_query(query)["data"].to_json
+  neo.execute_query(query)
 end
 
 get "/" do
