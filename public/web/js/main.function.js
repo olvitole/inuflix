@@ -1,6 +1,7 @@
 
 // DB
-var server_url = 'http://192.168.7.22:7474';
+// var server_url = 'http://192.168.7.22:7474';
+var server_url = 'http://inuflix.heroku.com/exec';
 
 // SEARCH
 function searchConcept(namespace){
@@ -19,7 +20,7 @@ function searchConcept(namespace){
 	// POST
 	$.ajax({
 		type: 'POST',
-		url: server_url + '/db/data/cypher',
+		url: server_url,
 		data: v_data,
 		dataType: 'json',
 		success: function(result){
@@ -67,7 +68,7 @@ function addConcept(name, namespace){
 	// POST
 	$.ajax({
 		type: 'POST',
-		url: server_url + '/db/data/cypher',
+		url: server_url,
 		data: v_data,
 		dataType: 'json',
 		success: function(result){
@@ -104,7 +105,7 @@ function getPropertyNei(target, target_type){
 		// POST
 		$.ajax({
 			type: 'POST',
-			url: server_url + '/db/data/cypher',
+			url: server_url,
 			data: v_data,
 			dataType: 'json',
 			success: function(result){
@@ -155,7 +156,7 @@ function getProperty(target, target_type){
 		// POST
 		$.ajax({
 			type: 'POST',
-			url: server_url + '/db/data/cypher',
+			url: server_url,
 			data: v_data,
 			dataType: 'json',
 			success: function(result){
@@ -207,7 +208,7 @@ function addNeighbours(uri, type){
 	// POST
 	$.ajax({
 		type: 'POST',
-		url: server_url + '/db/data/cypher',
+		url: server_url,
 		data: v_data,
 		dataType: 'json',
 		success: function(result){
