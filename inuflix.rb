@@ -5,8 +5,7 @@ require "sinatra"
 require "yaml"
 require "json"
 
-config = YAML.load_file("./config.yaml")
-neo = Neography::Rest.new(ENV['NEO4J_URL'] || config["neo4j_server"])
+neo = Neography::Rest.new(ENV['NEO4J_URL'] || YAML.load_file("./config.yaml")["neo4j_server"])
 
 post "/exec" do
   request.body.rewind
