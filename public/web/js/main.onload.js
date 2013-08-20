@@ -6,9 +6,9 @@ $(function() {
 		clearRes();
 		//searchCypher();
 		searchConcept('http://tcng.hgc.jp/');
-		searchConcept('http://ccle.acme.org/');
-		searchConcept('http://my.acme.org/');
-		searchConcept('http://www.biopax.org/release/');
+		//searchConcept('http://ccle.acme.org/');
+		//searchConcept('http://my.acme.org/');
+		//searchConcept('http://www.biopax.org/release/');
 		//searchConcept('http://www.biopax.org/release/biopax-level3.owl#');
 	});
 	
