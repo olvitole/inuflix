@@ -3,15 +3,15 @@
 require "neography"
 require "sinatra"
 require "yaml"
-require "json"
+require "cgi"
+require "uri"
 
 neo = Neography::Rest.new(ENV['NEO4J_URL'] || YAML.load_file("./config.yaml")["neo4j_server"])
 
 post "/exec" do
-  request.body.rewind
-  data = JSON.parse(request.body.read)
-  query = data["query"]
-  
+  param = URI(request.body.read).query
+  query = CGI::parse(param)["query"].first
+
   content_type :json
   neo.execute_query(query)
 end
