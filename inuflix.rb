@@ -6,7 +6,7 @@ require "haml"
 
 neo = Neography::Rest.new
 
-def execute_cypher(namespace, keyword)
+def execute_cypher(neo, namespace, keyword)
   w3type = "http://www.w3.org/1999/02/22-rdf-syntax-ns\#type"
   cypher_query =  " START x=node:`#{namespace}`(name = '#{keyword}')"
   cypher_query << " MATCH (x)-[?:#{w3type}]-(t)"
@@ -18,7 +18,7 @@ end
 
 get "/exec_cypher" do
   content_type :json
-  execute_cypher("http://ccle.acme.org/","FOXA1")
+  execute_cypher(neo, "http://ccle.acme.org/","FOXA1")
 end
 
 get "/" do
