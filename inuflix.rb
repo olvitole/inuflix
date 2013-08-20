@@ -2,6 +2,7 @@
 
 require "neography"
 require "sinatra"
+require "haml"
 
 neo = Neography::Rest.new(ENV['NEO4J_URL'] || "http://localhost:7474/")
 
