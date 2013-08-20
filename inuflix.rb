@@ -12,6 +12,8 @@ post "/exec" do
   request.body.rewind
   data = JSON.parse(request.body.read)
   query = data["query"]
+  
+  content_type :json
   neo.execute_query(query)["data"].to_json
 end
 
