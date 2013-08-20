@@ -12,8 +12,7 @@ def execute_cypher(neo, namespace, keyword)
   cypher_query << " MATCH (x)-[?:#{w3type}]-(t)"
   cypher_query << " RETURN x.uri, t.name"
   cypher_query << " LIMIT 100"
-  puts cypher_query
-  neo.execute_query(query)["data"]
+  neo.execute_query(cypher_query)["data"]
 end
 
 get "/exec_cypher" do
