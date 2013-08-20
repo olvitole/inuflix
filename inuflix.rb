@@ -16,7 +16,7 @@ end
 
 def execute_cypher(neo, namespace, keyword)
   cypher_query = query_builder(namespace, keyword)
-  neo.execute_query(cypher_query)["data"]
+  neo.execute_query(cypher_query)["data"].to_json
 end
 
 get "/exec_cypher" do
