@@ -1,2 +1,3 @@
-require './neoflix.rb'
+#require './neoflix.rb'
+require './inuflix.rb'
 run Sinatra::Application
