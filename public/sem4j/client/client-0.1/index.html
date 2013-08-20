@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<title>Sem4J</title>
+
+<!--
+<script type="text/javascript" src="../lib/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="../lib/d3.v3.min.js"></script>
+-->
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="./js/main.onload.js"></script>
+<script type="text/javascript" src="./js/main.function.js"></script>
+
+<link rel="stylesheet" href="./default.css" type="text/css" />
+<link rel="shortcut icon" href="./image/ico/Embryotic.ico" />
+
+</head>
+<body>
+	<div id="titlebar">
+		<div id="titlebar_title">
+			Sem4j
+		</div>
+		<div id="titlebar_menu">
+			<a id="titlebar_log">log</a>
+		</div>
+	</div>
+	<div id="container">
+		<div id="tabpanel">
+			<ul class="tab">
+				<li><a id="a_tab1" name="#tab1" class="selected">Search</a></li>
+				<li><a id="a_tab2" name="#tab2">View</a></li>
+				<li><a id="a_tab3" name="#tab3">Property</a></li>
+				<li><a id="a_tab4" name="#tab4">Download</a></li>
+			</ul>
+			<ul class="panel">
+				<li id="tab1">
+					<!-- <div class="menu">  -->
+					<div class="menu1_c">
+						<div class="menu2_t">Concept</div>
+						<div class="menu2_c">
+							<div class="menu3_t">Reference DB</div>
+							<div class="menu3_c">
+								<select class="menu3_c" id="selectRef">
+									<!-- Replaced -->
+								</select>
+							</div>
+							<div class="menu3_t">Concept Type</div>
+							<div class="menu3_c">
+								<select class="menu3_c" id="selectType">
+									<!-- Replaced -->
+								</select>
+							</div>
+							<div class="menu3_t">Search For</div>
+							<div class="menu3_c">
+								<select class="menu3_c" id="selectAnnotation">
+									<option value="name">Name</option>
+									<option value="accession">Accession ID</option>
+									<!-- Replaced -->
+								</select>
+							</div>
+						</div>
+						<div class="menu2_c">
+							<input type="text" size="40" id="searchByConcept" value="*RAS" />
+							<input type="submit" value="Go" id="submitConcept" />
+						</div>
+					</div>
+					<div class="menu1_c">
+						<div class="menu2_t" id="result_t">
+							<!-- Replaced by JavaScript -->
+						</div>
+						<div class="menu2_c" id="result_c">
+							<!-- Replaced by JavaScript -->
+						</div>
+					</div>
+				</li>
+				<li id="tab2">
+					<div class="menu1_t">Scope</div>
+					<div class="menu1_c">
+						<div class="menu2_t">Reference DB</div>
+						<div class="menu2_c">
+							<form id="scopeRef">
+								<!-- Replaced by JavaScript -->
+							</form>
+						</div>
+						<div class="menu2_t">Concept Type</div>
+						<div class="menu2_c">
+							<form id="scopeTypeConcept">
+								<!-- Replaced by JavaScript -->
+							</form>
+						</div>
+						<div class="menu2_t">Relation Type</div>
+						<div class="menu2_c">
+							<form id="scopeTypeRelation">
+								<!-- Replaced by JavaScript -->
+							</form>
+						</div>
+					</div>
+					<div class="menu1_t">Filter</div>
+					<div class="menu1_c">
+						<div class="menu2_t">Reference DB</div>
+						<div class="menu2_c">
+							<form id="filterRef">
+								<!-- Replaced by JavaScript -->
+							</form>
+						</div>
+						<div class="menu2_t">Concept Type</div>
+						<div class="menu2_c">
+							<form id="filterTypeConcept">
+								<!-- Replaced by JavaScript -->
+							</form>
+						</div>
+						<div class="menu2_t">Relation Type</div>
+						<div class="menu2_c">
+							<form id="filterTypeRelation">
+								<!-- Replaced by JavaScript -->
+							</form>
+						</div>
+					</div>
+					<div class="menu1_t">Style</div>
+					<div class="menu1_c">
+						<div class="menu2_c">
+							<form id="formStyle">
+								<label><input type="radio" name="radioStyle" value="ForceDirected" checked />Force Directed</label>
+								<label><input type="radio" name="radioStyle" value="Circle" />Circle</label>
+								<label><input type="radio" name="radioStyle" value="Radial" />Radial</label>
+								<label><input type="radio" name="radioStyle" value="Tree" />Tree</label>
+								<label><input type="radio" name="radioStyle" value="Preset" />Preset</label>
+							</form>
+						</div>
+					</div>
+					<div class="menu1_t">Edge Label</div>
+					<div class="menu1_c">
+						<div class="menu2_c">
+							<form id="formLabelEdge">
+								<label><input type="radio" name="radioStyle" value="label" checked />Label</label>
+								<label><input type="radio" name="radioStyle" value="weight" />Weight Value</label>
+							</form>
+						</div>
+					</div>
+					<div class="menu1_t">Save</div>
+					<div class="menu1_c" id="saveList">
+						<a id="pSaveXGMML">XGMML</a>
+						<a id="pSaveGraphML">GraphML</a>
+						<a id="pSaveSIF">SIF</a>
+						<a id="pSave">SVG</a>
+						<a id="pSave">PDF</a>
+						<a id="pSave">PNG</a>
+					</div>
+					<div class="menu1_t"><!-- To Clear Float --></div>
+				</li>
+				<li id="tab3">
+					<div id="property"></div>
+					<div id="propertyNei"></div>
+				</li>
+				<li id="tab4">
+					<div class="menu1_t">Download</div>
+					<div class="menu1_c">
+						<div class="menu2_t">Concept Type</div>
+						<div class="menu2_c">
+							<form id="downloadTypeConcept">
+								<!-- Replaced by Javascript -->
+							</form>
+						</div>
+						<div class="menu2_t">Relation Type</div>
+						<div class="menu2_c">
+							<form id="downloadTypeRelation">
+								<!-- Replaced by Javascript -->
+							</form>
+						</div>
+						<div class="menu2_c">
+							<a id="downloadLink">Download</a>
+							<input type="file" id="submitUpload" value="Upload" name="files[]" />
+							<output id="list"></output>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id="main">
+			<div id="d3svg"></div>
+		</div>
+	</div>
+	<div id="floatWindow">
+		<a href="ShowGraph.jsp" class="close"><img src="./image/close.png" alt="Close" /></a>
+		<dl>
+			<dt id="floatTitle">Log</dt>
+			<dd id="log"></dd>
+		</dl>
+	</div>
+</body>
+<script type="text/javascript" src="./js/main.vis.js"></script>
+</html>
