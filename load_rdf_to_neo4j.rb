@@ -1,6 +1,7 @@
 # coding for Ruby 2.0
 
 require "rdf"
+require "rdf/ntriples"
 require "uri"
 require "neography"
 
@@ -44,12 +45,16 @@ end
 if __FILE__ == $0
   neo = Neography::Rest.new(ENV["NEO4J_URL"] || "http://localhost:7474")
   
+  include RDF
+  
   @fpath = ARGV.first
   RDF::Reader.open(@fpath) do |reader|
     reader.each_statement do |statement|
       subject = statement.subject.to_s
       predicate = statement.predicate.to_s
       object = statement.object.to_s
+      
+      puts subject
       
       # get/create node for subject
       node_s = get_or_create_node(neo, subject)
