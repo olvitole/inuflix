@@ -1,2 +1,2 @@
-require './inuflix.rb'
+require './app.rb'
 run Sinatra::Application
