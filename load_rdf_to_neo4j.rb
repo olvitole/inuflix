@@ -1,7 +1,6 @@
 # coding for Ruby 2.0
 
 require "rdf"
-require "rdf/raptor"
 require "uri"
 require "neography"
 

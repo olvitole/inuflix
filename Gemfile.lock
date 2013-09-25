@@ -3,7 +3,6 @@ GEM
   specs:
     addressable (2.3.5)
     excon (0.25.3)
-    ffi (1.9.0)
     haml (4.0.3)
       tilt
     heroku (2.39.5)
@@ -33,9 +32,6 @@ GEM
       rack
     rdf (1.0.8)
       addressable (>= 2.2)
-    rdf-raptor (1.0.1)
-      ffi (>= 1.0)
-      rdf (>= 1.0.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rubyzip (0.9.9)
@@ -53,5 +49,4 @@ DEPENDENCIES
   heroku
   neography
   rdf
-  rdf-raptor
   sinatra
