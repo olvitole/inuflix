@@ -5,24 +5,6 @@ require "neography"
 
 # GENERAL METHODS
 
-def get_or_create_node(neo, uri)
-  uri_p = URI.parse(uri)
-  name = uri_p.path.gsub(/^\//,"")
-  namespace = uri_p.scheme + "://" + uri_p.host + "/"
-  node = neo.get_node_index(namespace, "name", name)
-  
-  if !node
-    node = neo.create_node("uri" => uri, "name" => name)
-    neo.add_node_to_index(namespace, "name", name, node)
-    neo.add_node_to_index("files", "file", @fpath, node)
-  end
-  node
-rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
-  neo.create_node_index("files")
-  retry
-end
-
 def set_property(neo, node, type, value)
   property = neo.get_node_properties(node, type)
   raise NameError if !property.values.include?(value)
@@ -42,11 +24,29 @@ def uri?(string)
   string if string =~ /^http/
 end
 
-# A LOADING METHOD FOR STANDARD S-P-O MODEL INPUT
+# METHODS FOR STANDARD S-P-O MODEL INPUT
+
+def get_or_create_node_by_uri(neo, uri)
+  uri_p = URI.parse(uri)
+  name = uri_p.path.gsub(/^\//,"")
+  namespace = uri_p.scheme + "://" + uri_p.host + "/"
+  node = neo.get_node_index(namespace, "name", name)
+  
+  if !node
+    node = neo.create_node("uri" => uri, "name" => name)
+    neo.add_node_to_index(namespace, "name", name, node)
+    neo.add_node_to_index("files", "file", @fpath, node)
+  end
+  node
+rescue Neography::NotFoundException
+  neo.create_node_index(namespace)
+  neo.create_node_index("files")
+  retry
+end
 
 def load_rdf(neo, subject, predicate, object)
   # get/create node for subject
-  node_s = get_or_create_node(neo, subject)
+  node_s = get_or_create_node_by_uri(neo, subject)
       
   if !uri?(object)
     # object is literal: set object as property, type = predicate
@@ -60,9 +60,21 @@ end
 
 # LOADING METHODS FOR TABULAR INPUT, SEPARATED FOR NODES AND RELS
 
+def get_or_create_node_by_id(neo, id, namespace)
+  node = neo.get_node_index(namespace, "id", id)
+  if !node
+    node = neo.create_node("id" => id)
+    neo.add_node_to_index(namespace, "id", id, node)
+  end
+  node
+rescue Neography::NotFoundException
+  neo.create_node_index(namespace)
+  retry
+end
+
 def load_node(neo, node_spec)
   node_id = node_spec["id"]
-  node = get_or_create_node(neo, node_id)
+  node = get_or_create_node_by_id(neo, node_id, "namespace")
 
   node_properties = node_spec["properties"]
   node_properties.each do |property|
