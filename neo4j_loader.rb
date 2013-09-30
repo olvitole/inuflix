@@ -42,7 +42,7 @@ def uri?(string)
   string if string =~ /^http/
 end
 
-# A METHOD FOR VARIOUS RDF FORMATS INPUT
+# A LOADING METHOD FOR STANDARD S-P-O MODEL INPUT
 
 def load_rdf(neo, subject, predicate, object)
   # get/create node for subject
@@ -58,7 +58,7 @@ def load_rdf(neo, subject, predicate, object)
   end
 end
 
-# METHODS FOR TABULAR INPUT
+# LOADING METHODS FOR TABULAR INPUT, SEPARATED FOR NODES AND RELS
 
 def load_node(neo, node_spec)
   node_id = node_spec["id"]
@@ -109,7 +109,7 @@ if __FILE__ == $0
       end
     end
     
-  when ARGV.length == 2
+  when 2
     require "json"
 
     nodes = open(ARGV.first){|f| JSON.load(f) }
