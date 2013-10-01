@@ -1,23 +1,53 @@
 # coding for Ruby 2.0
 
-require "uri"
 require "neography"
+require "uri"
 
 # GENERAL METHODS
 
-def set_property(neo, node, type, value)
-  property = neo.get_node_properties(node, type)
-  raise NameError if !property.values.include?(value)
+def get_or_create_node(neo, namespace, key, value)
+  # using namespace as a name of index
+  node = neo.get_node_index(namespace, key, value)
+  if node
+    node
+  else
+    node = neo.create_node
+    neo.add_node_to_index(namespace, key, value, node)
+    node
+  end
+rescue Neography::NotFoundException
+  neo.create_node_index(namespace)
+  retry
+end
+
+def add_node_to_index(neo, namespace, key, value, node)
+  neo.add_node_to_index(namespace, key, value, node)
+rescue Neography::NotFoundException
+  neo.create_node_index(namespace)
+  retry
+end
+
+def set_node_property(neo, node, key, value)
+  property_value = neo.get_node_properties(node, key)
+  raise NameError if property_value != value
 rescue Neography::NoSuchPropertyException
-  neo.set_node_properties(node, {type => value})
+  neo.set_node_properties(node, {key => value})
 end
 
 def get_or_create_relationship(neo, node_start, node_end, type)
   rel = neo.get_node_relationships(node_start, "out", type)
-  if !rel
+  if rel
+    rel
+  else
     neo.create_relationship(type, node_start, node_end)
-    neo.set_relationship_properties(rel, {"type" => type})
   end
+end
+
+def set_relationship_property(neo, rel, key, value)
+  property_value = neo.get_relationship_properties(rel, key)
+  raise NameError if property_value != value
+rescue Neography::NoSuchPropertyException
+  neo.set_relationship_properties(rel, {key => value})
 end
 
 def uri?(string)
@@ -26,71 +56,50 @@ end
 
 # METHODS FOR STANDARD S-P-O MODEL INPUT
 
-def get_or_create_node_by_uri(neo, uri)
+def parse_uri(uri)
   uri_p = URI.parse(uri)
   name = uri_p.path.gsub(/^\//,"")
   namespace = uri_p.scheme + "://" + uri_p.host + "/"
-  node = neo.get_node_index(namespace, "name", name)
-  
-  if !node
-    node = neo.create_node("uri" => uri, "name" => name)
-    neo.add_node_to_index(namespace, "name", name, node)
-    neo.add_node_to_index("files", "file", @fpath, node)
-  end
-  node
-rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
-  neo.create_node_index("files")
-  retry
+  { namespace: namespace, name: name}
 end
 
 def load_rdf(neo, subject, predicate, object)
   # get/create node for subject
-  node_s = get_or_create_node_by_uri(neo, subject)
-      
-  if !uri?(object)
-    # object is literal: set object as property, type = predicate
-    set_property(neo, node_s, predicate, object)
-  else
+  uri_s = parse_uri(subject)
+  node_s = get_or_create_node(neo, uri_s["namespace"], "name", uri_s["name"])
+  set_node_property(neo, node_s, "uri", subject)
+  
+  if uri?(object)
     # object is uri: get/create node for object and make relationship, type = predicate
     node_o = get_or_create_node(neo, object)
     get_or_create_relationship(neo, node_s, node_o, predicate)
+  else
+    # object is literal: set object as property, type = predicate
+    set_property(neo, node_s, predicate, object)
   end
 end
 
 # LOADING METHODS FOR TABULAR INPUT, SEPARATED FOR NODES AND RELS
 
-def get_or_create_node_by_id(neo, id, namespace)
-  node = neo.get_node_index(namespace, "id", id)
-  if !node
-    node = neo.create_node("id" => id)
-    neo.add_node_to_index(namespace, "id", id, node)
-  end
-  node
-rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
-  retry
-end
-
-def load_node(neo, node_spec)
+def load_node(neo, namespace, node_spec)
   node_id = node_spec["id"]
-  node = get_or_create_node_by_id(neo, node_id, "namespace")
+  node = get_or_create_node(neo, namespace, "id", node_id)
 
   node_properties = node_spec["properties"]
   node_properties.each do |property|
-    type = property["name"]
+    key = property["name"]
     value = property["value"]
-    set_property(neo, node, type, value)
+    set_node_property(neo, node, key, value)
   end
 end
 
-def load_relation(neo, relation_spec)
+def load_relation(neo, namespace, relation_spec)
   start_id = relation_spec["source"]
   end_id = relation_spec["end"]
   type = relation_spec["properties"][0]["value"] # not quite elegant
   
-  start_node = get_or_create_node(neo, start_id)
-  end_node = get_or_create_node(neo, end_id)
+  start_node = get_or_create_node(neo, namespace, "id", start_id)
+  end_node = get_or_create_node(neo, namespace, "id", end_id)
   
   get_or_crete_relationship(neo, start_node, end_node, type)
 end
