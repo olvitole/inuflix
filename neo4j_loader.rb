@@ -13,8 +13,8 @@ rescue Neography::NotFoundException
 end
 
 def set_node_property(neo, node, key, value)
-  property_value = neo.get_node_properties(node, key)
-  raise NameError if property_value != value
+  node_properties = neo.get_node_properties(node, key)
+  raise NameError if node_properties.values.first != value
 rescue Neography::NoSuchPropertyException
   neo.set_node_properties(node, {key => value})
 end
@@ -41,8 +41,8 @@ def get_or_create_relationship(neo, node_start, node_end, type)
 end
 
 def set_relationship_property(neo, rel, key, value)
-  property_value = neo.get_relationship_properties(rel, key)
-  raise NameError if property_value != value
+  rel_properties = neo.get_relationship_properties(rel, key)
+  raise NameError if rel_properties.values.first != value
 rescue Neography::NoSuchPropertyException
   neo.set_relationship_properties(rel, {key => value})
 end
@@ -90,7 +90,7 @@ def load_node(neo, namespace, node_spec)
   end
 end
 
-def load_relation(neo, namespace, relation_spec)
+def load_relationship(neo, namespace, relation_spec)
   start_id = relation_spec["source"]
   end_id = relation_spec["end"]
   type = relation_spec["properties"][0]["value"] # not quite elegant
@@ -141,7 +141,7 @@ if __FILE__ == $0
     rel_filename = rel_file.split("/").last
     relations = open(rel_file){|f| JSON.load(f) }
     relations.each do |relation_spec|
-      load_relation(neo, rel_filename, relation_spec)
+      load_relationship(neo, rel_filename, relation_spec)
     end
     
   else
