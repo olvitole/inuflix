@@ -97,8 +97,7 @@ def load_relationship(neo, namespace, relation_spec)
   
   start_node = get_or_create_node(neo, namespace, "id", start_id)
   end_node = get_or_create_node(neo, namespace, "id", end_id)
-  
-  get_or_crete_relationship(neo, start_node, end_node, type)
+  get_or_create_relationship(neo, start_node, end_node, type)
 end
 
 if __FILE__ == $0
