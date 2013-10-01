@@ -129,18 +129,18 @@ if __FILE__ == $0
   when 2
     require "json"
     
+    namespace = "graph_test"
+    
     node_file = ARGV.first
-    node_filename = node_file.split("/").last
     nodes = open(node_file){|f| JSON.load(f) }
     nodes.each do |node_spec|
-      load_node(neo, node_filename, node_spec)
+      load_node(neo, namespace, node_spec)
     end
     
     rel_file = ARGV.last
-    rel_filename = rel_file.split("/").last
     relations = open(rel_file){|f| JSON.load(f) }
     relations.each do |relation_spec|
-      load_relationship(neo, rel_filename, relation_spec)
+      load_relationship(neo, namespace, relation_spec)
     end
     
   else
