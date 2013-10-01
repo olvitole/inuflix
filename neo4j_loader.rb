@@ -92,7 +92,7 @@ end
 
 def load_relationship(neo, namespace, relation_spec)
   start_id = relation_spec["source"]
-  end_id = relation_spec["end"]
+  end_id = relation_spec["target"]
   type = relation_spec["properties"][0]["value"] # not quite elegant
   
   start_node = get_or_create_node(neo, namespace, "id", start_id)
