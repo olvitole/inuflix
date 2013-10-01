@@ -33,7 +33,7 @@ rescue Neography::NotFoundException
 end
 
 def get_or_create_relationship(neo, node_start, node_end, type)
-  rel = neo.get_node_relationships(node_start, "out", type)
+  rel = neo.get_node_relationships_to(node_start, node_end, "out", type)
   if !rel
     rel = neo.create_relationship(type, node_start, node_end)
   end
