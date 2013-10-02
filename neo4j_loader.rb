@@ -5,10 +5,10 @@ require "uri"
 
 # GENERAL METHODS
 
-def add_node_to_index(neo, namespace, key, value, node)
-  neo.add_node_to_index(namespace, key, value, node)
+def add_node_to_index(neo, index_name, key, value, node)
+  neo.add_node_to_index(index_name, key, value, node)
 rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
+  neo.create_node_index(index_name)
   retry
 end
 
@@ -19,16 +19,16 @@ rescue Neography::NoSuchPropertyException
   neo.set_node_properties(node, {key => value})
 end
 
-def get_or_create_node(neo, namespace, key, value)
-  node = neo.get_node_index(namespace, key, value)
+def get_or_create_node(neo, index_name, key, value)
+  node = neo.get_node_index(index_name, key, value)
   if !node
     node = neo.create_node
-    add_node_to_index(neo, namespace, key, value, node)
+    add_node_to_index(neo, index_name, key, value, node)
     set_node_property(neo, node, key, value)
   end
   node
 rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
+  neo.create_node_index(index_name)
   retry
 end
 
@@ -78,9 +78,9 @@ end
 
 # LOADING METHODS FOR TABULAR INPUT, SEPARATED FOR NODES AND RELS
 
-def load_node(neo, namespace, node_spec)
+def load_node(neo, index_name, node_spec)
   node_id = node_spec["id"]
-  node = get_or_create_node(neo, namespace, "id", node_id)
+  node = get_or_create_node(neo, index_name, "id", node_id)
 
   node_properties = node_spec["properties"]
   node_properties.each do |property|
@@ -90,13 +90,13 @@ def load_node(neo, namespace, node_spec)
   end
 end
 
-def load_relationship(neo, namespace, relation_spec)
+def load_relationship(neo, index_name, relation_spec)
   start_id = relation_spec["source"]
   end_id = relation_spec["target"]
   type = relation_spec["properties"][0]["value"] # not quite elegant
   
-  start_node = get_or_create_node(neo, namespace, "id", start_id)
-  end_node = get_or_create_node(neo, namespace, "id", end_id)
+  start_node = get_or_create_node(neo, index_name, "id", start_id)
+  end_node = get_or_create_node(neo, index_name, "id", end_id)
   get_or_create_relationship(neo, start_node, end_node, type)
 end
 
@@ -129,18 +129,18 @@ if __FILE__ == $0
   when 2
     require "json"
     
-    namespace = "graph_test"
+    node_fpath = ARGV.first
+    rel_fpath = ARGV.last
+    index_name = node_fpath.split("/").last + "." + rel_fpath.split("/").last
     
-    node_file = ARGV.first
-    nodes = open(node_file){|f| JSON.load(f) }
+    nodes = open(node_fpath){|f| JSON.load(f) }
     nodes.each do |node_spec|
-      load_node(neo, namespace, node_spec)
+      load_node(neo, index_name, node_spec)
     end
     
-    rel_file = ARGV.last
-    relations = open(rel_file){|f| JSON.load(f) }
+    relations = open(rel_fpath){|f| JSON.load(f) }
     relations.each do |relation_spec|
-      load_relationship(neo, namespace, relation_spec)
+      load_relationship(neo, index_name, relation_spec)
     end
     
   else
