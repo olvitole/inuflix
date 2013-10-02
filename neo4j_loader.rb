@@ -4,6 +4,8 @@ require "neography"
 require "uri"
 
 # GENERAL METHODS
+# get or create and return node/relationship object
+# set and varidate properties for node/relationship
 
 def add_node_to_index(neo, index_name, key, value, node)
   neo.add_node_to_index(index_name, key, value, node)
@@ -47,11 +49,8 @@ rescue Neography::NoSuchPropertyException
   neo.set_relationship_properties(rel, {key => value})
 end
 
-def uri?(string)
-  string if string =~ /^http/
-end
-
-# METHODS FOR STANDARD S-P-O MODEL INPUT
+# FOR STANDARD S-P-O MODEL INPUT
+# parsing uri, load RDF to neo4j
 
 def parse_uri(uri)
   uri_p = URI.parse(uri)
@@ -60,10 +59,13 @@ def parse_uri(uri)
   { namespace: namespace, name: name}
 end
 
+def uri?(string)
+  string if string =~ /^http/
+end
+
 def load_rdf(neo, subject, predicate, object)
-  # get/create node for subject
-  uri_s = parse_uri(subject)
-  node_s = get_or_create_node(neo, uri_s["namespace"], "name", uri_s["name"])
+  parsed_uri = parse_uri(subject)
+  node_s = get_or_create_node(neo, parsed_uri["namespace"], "name", parsed_uri["name"])
   set_node_property(neo, node_s, "uri", subject)
   
   if uri?(object)
@@ -76,7 +78,8 @@ def load_rdf(neo, subject, predicate, object)
   end
 end
 
-# LOADING METHODS FOR TABULAR INPUT, SEPARATED FOR NODES AND RELS
+# METHODS FOR JSON INPUT, SEPARATED FOR NODES AND RELS
+# for third normalized form, load node/relationship
 
 def load_node(neo, index_name, node_spec)
   node_id = node_spec["id"]
