@@ -93,11 +93,18 @@ end
 def load_relationship(neo, index_name, relation_spec)
   start_id = relation_spec["source"]
   end_id = relation_spec["target"]
-  type = relation_spec["properties"][0]["value"] # not quite elegant
+  rel_properties = relation_spec["properties"]
+  type = rel_properties.shift["value"] # not quite elegant
   
   start_node = get_or_create_node(neo, index_name, "id", start_id)
   end_node = get_or_create_node(neo, index_name, "id", end_id)
-  get_or_create_relationship(neo, start_node, end_node, type)
+  rel = get_or_create_relationship(neo, start_node, end_node, type)
+  
+  rel_properties.each do |property|
+    key = property["name"]
+    value = property["value"]
+    set_relationship_property(neo, rel, key, value)
+  end
 end
 
 if __FILE__ == $0
