@@ -2,6 +2,7 @@
 
 require "neography"
 require "uri"
+require "parallel"
 
 # GENERAL METHODS
 
@@ -132,14 +133,14 @@ if __FILE__ == $0
     node_file = ARGV.first
     node_filename = node_file.split("/").last
     nodes = open(node_file){|f| JSON.load(f) }
-    nodes.each do |node_spec|
+    Parallel.each(nodes, :in_threads => 2) do |node_spec|
       load_node(neo, node_filename, node_spec)
     end
     
     rel_file = ARGV.last
     rel_filename = rel_file.split("/").last
     relations = open(rel_file){|f| JSON.load(f) }
-    relations.each do |relation_spec|
+    Parallel.each(relations, :in_threads => 2) do |relation_spec|
       load_relationship(neo, rel_filename, relation_spec)
     end
     
