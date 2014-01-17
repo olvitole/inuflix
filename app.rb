@@ -8,7 +8,8 @@ require "uri"
 
 enable :cross_origin
 
-neo = Neography::Rest.new(ENV['NEO4J_URL'] || YAML.load_file("./config.yaml")["neo4j_server"])
+#neo = Neography::Rest.new(ENV['NEO4J_URL'] || YAML.load_file("./config.yaml")["neo4j_server"])
+neo = Neography::Rest.new(YAML.load_file("./config.yaml")["neo4j_server"])
 
 post "/exec" do
   request.body.rewind
