@@ -110,6 +110,25 @@ def load_relationship(neo, index_name, relation_spec)
   end
 end
 
+# METHODS FOR BATCH IMPORT
+# ref: http://www.slideshare.net/maxdemarzi/etl-into-neo4j
+# currently implemented as mock method, fix it later (maybe)
+
+def batch_load(neo)
+  graph_exist = neo.get_node_properties(1)
+  return if graph_exist && graph_exists["name"]
+  names = 200.times.collect{|x| generate_text }
+  commands = names.map{|n| [:create_node, { "name" => n }] }
+  names.each_index do |x|
+    follows = names.size.times.map{|y| y }
+    follows.delete_at(x)
+    follows.sample(rand(10)).each do |f|
+      commands << [:create_relationship, "follows", "{#{x}}", "{#{f}}"]
+    end
+  end
+  batch_result = neo.batch *commands
+end
+
 if __FILE__ == $0
   neo = Neography::Rest.new(ENV["NEO4J_URL"] || "http://localhost:7474")
   
