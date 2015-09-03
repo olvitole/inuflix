@@ -5,11 +5,13 @@ require "uri"
 require "parallel"
 
 # GENERAL METHODS
+# get or create and return node/relationship object
+# set and varidate properties for node/relationship
 
-def add_node_to_index(neo, namespace, key, value, node)
-  neo.add_node_to_index(namespace, key, value, node)
+def add_node_to_index(neo, index_name, key, value, node)
+  neo.add_node_to_index(index_name, key, value, node)
 rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
+  neo.create_node_index(index_name)
   retry
 end
 
@@ -20,16 +22,16 @@ rescue Neography::NoSuchPropertyException
   neo.set_node_properties(node, {key => value})
 end
 
-def get_or_create_node(neo, namespace, key, value)
-  node = neo.get_node_index(namespace, key, value)
+def get_or_create_node(neo, index_name, key, value)
+  node = neo.get_node_index(index_name, key, value)
   if !node
     node = neo.create_node
-    add_node_to_index(neo, namespace, key, value, node)
+    add_node_to_index(neo, index_name, key, value, node)
     set_node_property(neo, node, key, value)
   end
   node
 rescue Neography::NotFoundException
-  neo.create_node_index(namespace)
+  neo.create_node_index(index_name)
   retry
 end
 
@@ -48,11 +50,8 @@ rescue Neography::NoSuchPropertyException
   neo.set_relationship_properties(rel, {key => value})
 end
 
-def uri?(string)
-  string if string =~ /^http/
-end
-
-# METHODS FOR STANDARD S-P-O MODEL INPUT
+# FOR STANDARD S-P-O MODEL INPUT
+# parsing uri, load RDF to neo4j
 
 def parse_uri(uri)
   uri_p = URI.parse(uri)
@@ -61,10 +60,13 @@ def parse_uri(uri)
   { namespace: namespace, name: name}
 end
 
+def uri?(string)
+  string if string =~ /^http/
+end
+
 def load_rdf(neo, subject, predicate, object)
-  # get/create node for subject
-  uri_s = parse_uri(subject)
-  node_s = get_or_create_node(neo, uri_s["namespace"], "name", uri_s["name"])
+  parsed_uri = parse_uri(subject)
+  node_s = get_or_create_node(neo, parsed_uri["namespace"], "name", parsed_uri["name"])
   set_node_property(neo, node_s, "uri", subject)
   
   if uri?(object)
@@ -77,11 +79,12 @@ def load_rdf(neo, subject, predicate, object)
   end
 end
 
-# LOADING METHODS FOR TABULAR INPUT, SEPARATED FOR NODES AND RELS
+# METHODS FOR JSON INPUT, SEPARATED FOR NODES AND RELS
+# for third normalized form, load node/relationship
 
-def load_node(neo, namespace, node_spec)
+def load_node(neo, index_name, node_spec)
   node_id = node_spec["id"]
-  node = get_or_create_node(neo, namespace, "id", node_id)
+  node = get_or_create_node(neo, index_name, "id", node_id)
 
   node_properties = node_spec["properties"]
   node_properties.each do |property|
@@ -91,14 +94,40 @@ def load_node(neo, namespace, node_spec)
   end
 end
 
-def load_relationship(neo, namespace, relation_spec)
+def load_relationship(neo, index_name, relation_spec)
   start_id = relation_spec["source"]
   end_id = relation_spec["target"]
-  type = relation_spec["properties"][0]["value"] # not quite elegant
+  rel_properties = relation_spec["properties"]
+  type = rel_properties.shift["value"] # not quite elegant
   
-  start_node = get_or_create_node(neo, namespace, "id", start_id)
-  end_node = get_or_create_node(neo, namespace, "id", end_id)
-  get_or_create_relationship(neo, start_node, end_node, type)
+  start_node = get_or_create_node(neo, index_name, "id", start_id)
+  end_node = get_or_create_node(neo, index_name, "id", end_id)
+  rel = get_or_create_relationship(neo, start_node, end_node, type)
+  
+  rel_properties.each do |property|
+    key = property["name"]
+    value = property["value"]
+    set_relationship_property(neo, rel, key, value)
+  end
+end
+
+# METHODS FOR BATCH IMPORT
+# ref: http://www.slideshare.net/maxdemarzi/etl-into-neo4j
+# currently implemented as mock method, fix it later (maybe)
+
+def batch_load(neo)
+  graph_exist = neo.get_node_properties(1)
+  return if graph_exist && graph_exists["name"]
+  names = 200.times.collect{|x| generate_text }
+  commands = names.map{|n| [:create_node, { "name" => n }] }
+  names.each_index do |x|
+    follows = names.size.times.map{|y| y }
+    follows.delete_at(x)
+    follows.sample(rand(10)).each do |f|
+      commands << [:create_relationship, "follows", "{#{x}}", "{#{f}}"]
+    end
+  end
+  batch_result = neo.batch *commands
 end
 
 if __FILE__ == $0
